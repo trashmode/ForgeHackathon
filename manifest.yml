@@ -1,0 +1,19 @@
+modules:
+    macro:
+        - key: hackathon-hello-world-macro
+          resource: main
+          render: native
+          resolver:
+              function: resolver
+          title: Hackathon
+          config: true
+    function:
+        - key: resolver
+          handler: index.handler
+resources:
+    - key: main
+      path: src/frontend/index.jsx
+app:
+    runtime:
+        name: nodejs18.x
+    id: ari:cloud:ecosystem::app/e83e492a-80ac-4299-bfca-ed50f775402b
