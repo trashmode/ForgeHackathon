@@ -1,37 +1,50 @@
-import React, { useEffect, useState } from 'react';
-import ForgeReconciler, { Text } from '@forge/react';
 import { invoke } from '@forge/bridge';
-import { Label, Textfield, TextArea } from '@forge/react';
-
+import ForgeReconciler, { Box, Button, Heading, ProgressBar, Tag, TagGroup, Text, xcss } from '@forge/react';
+import React, { useState } from 'react';
 
 const App = () => {
-  const [data, setData] = useState(null);
-  const [options, setOptions] = useState();
-  const [polltitle, setPolltitle] = useState();
-  const [context, setContext] = useState();
-  useEffect(() => {
-    invoke('getText', { example: 'my-invoke-variable' }).then(setData);
-  }, []);
+  const [data, setData] = useState(['Oscar Piastri', 'Daniel Riccardo', 'Valteri Bottas']);
+  const [isToggled, setIsToggled] = useState(false);
+  const [progress, setProgress] = useState(0.3)
+
+  const toggleButton = () => {
+    setIsToggled(!isToggled);
+  };
+
+  const signUpUser = async () => {
+    try {
+      const user = await invoke('getUser');
+      const userName = user.publicName;
+      console.log([...data, userName]);
+      setData([...data, userName]);
+      toggleButton();
+      setProgress(progress + 0.1);
+    } catch (error) {
+      console.error('Error fetching user info:', error);
+    }
+  };
 
   return (
     <>
-      <Text>Hello world!</Text>
-      <Text>{data ? data : 'Loading...'}</Text>
+      <Heading as="h1">Participants</Heading>
+      <Box xcss={xcss({height:"1rem"})}/>
+      <ProgressBar ariaLabel="Done: 3 of 10 issues" value={progress} />
+      {data ? (
+        <TagGroup>
+          {data.map((participant, index) => (
+            <Tag key={index} text={participant} />
+          ))}
+        </TagGroup>
+      ) : (
+        <Text>Loading...</Text>
+      )}
+      <Box xcss={xcss({height:"1rem"})}/>
+      <Button onClick={signUpUser} appearance='primary' isDisabled={isToggled}>
+        Sign up!
+      </Button>
     </>
   );
 };
-
-const Config = () => {
-  return (
-     <>
-       <Label>Add your poll title here</Label>
-       <Textfield name="title" value="title" />
-       <Label>Add comma-separated options here</Label>
-       <TextArea name="options" value="options" />
-  </> );
-};
-
-ForgeReconciler.addConfig(<Config />);
 
 ForgeReconciler.render(
   <React.StrictMode>

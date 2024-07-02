@@ -17,3 +17,8 @@ app:
     runtime:
         name: nodejs18.x
     id: ari:cloud:ecosystem::app/e83e492a-80ac-4299-bfca-ed50f775402b
+permissions:
+  scopes:
+    - read:confluence-user
+    - read:confluence-content.summary
+
